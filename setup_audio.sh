@@ -30,9 +30,9 @@ echo "=== 正在配置音频流 ==="
 pactl set-default-sink record_pool
 
 pactl unload-module module-loopback 2>/dev/null
-pactl load-module module-loopback source="$UGREEN_IN" sink=record_pool
+pactl load-module module-loopback source="$UGREEN_IN" sink=record_pool latency_msec=5
 
-pactl load-module module-loopback source=record_pool.monitor sink="$PC_OUT"
+pactl load-module module-loopback source=record_pool.monitor sink="$PC_OUT" latency_msec=5
 
 echo "✅配置完成！"
 echo "在 Simple Screen Recorder 中："

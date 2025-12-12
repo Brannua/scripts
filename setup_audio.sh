@@ -14,25 +14,21 @@
 
 echo "=== 查找音频设备 ==="
 
-UGREEN_IN=$(pactl list short sources | rg input | head -1 | awk '{print $2}')
+UGREEN_IN=$(pactl list short sources | rg input | tail -1 | awk '{print $2}')
 echo "你的输入设备：$UGREEN_IN"
 
-PC_OUT=$(pactl list short sinks | rg "analog-stereo" | tail -1 | awk '{print $2}')
-echo "你的输出设备：$PC_OUT"
-
-echo "=== 创建虚拟混音池 ==="
+UGREEN_OUT=$(pactl list short sinks | rg output | tail -1 | awk '{print $2}')
+echo "你的输出设备：$UGREEN_OUT"
 
 pactl unload-module module-null-sink 2>/dev/null
-pactl load-module module-null-sink sink_name=record_pool
-
-echo "=== 正在配置音频流 ==="
-
-pactl set-default-sink record_pool
-
 pactl unload-module module-loopback 2>/dev/null
-pactl load-module module-loopback source="$UGREEN_IN" sink=record_pool latency_msec=5
 
-pactl load-module module-loopback source=record_pool.monitor sink="$PC_OUT" latency_msec=5
+echo "=== 创建虚拟混音池 ==="
+pactl load-module module-null-sink sink_name=record_pool
+echo "=== 正在配置音频流 ==="
+pactl set-default-sink record_pool
+pactl load-module module-loopback source="$UGREEN_IN" sink=record_pool latency_msec=5
+pactl load-module module-loopback source=record_pool.monitor sink="$UGREEN_OUT"
 
 echo "✅配置完成！"
 echo "在 Simple Screen Recorder 中："

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # 获取电池电量（取整数）
 BATTERY_NUM=$(acpi | rg --pcre2 -o '[0-9]+(?=%)')
